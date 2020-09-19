@@ -3,13 +3,14 @@ var notesData = require("../db/db.json");
 const fs = require('fs');
 const util = require('util');
 const { v4: uuidv4 } = require('uuid');
+var path = require("path");
 const thenableWriteFile = util.promisify(fs.writeFile);
 
 
 module.exports = function(app){
 
     app.get("/api/notes", function(req, res) {
-        res.json(notesData)
+        res.sendFile(path.join(__dirname, "../db/db.json"));
     });
     
     app.post("/api/notes", function(req, res) {
@@ -55,7 +56,7 @@ module.exports = function(app){
 
             const allNotes = JSON.parse(data);
 
-            const newNotebook = allNotes.filter(note => note.id =! noteDelete);
+            const newNotebook = allNotes.filter(note => note.id != noteDelete);
 
             fs.writeFile("./db/db.json", JSON.stringify(newNotebook), err => {
                 if (err) throw (err);
@@ -65,6 +66,8 @@ module.exports = function(app){
 
             })
         })
+
+        
 
     })
 
